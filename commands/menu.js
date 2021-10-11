@@ -9,7 +9,6 @@ const menu = `
 ⌖ ${prefix}donate
 ⌖ ${prefix}ownerbot/ownerbot
 ⌖ ${prefix}join [Group Link]
-⌖ ${prefix}
 
 *⌊ Other ⌉*
 
@@ -45,6 +44,7 @@ const menu = `
 
 ⌖ ${prefix}xnxx [Title]
 ⌖ ${prefix}xnxxdl [link] [still in progress]
+⌖ ${prefix}nhder [Doujin Code]
 
 `
 const adminmenu = `
