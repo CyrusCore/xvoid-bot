@@ -1,12 +1,30 @@
 # xvoid-bot
- How To Install?
+
+<img src="https://user-images.githubusercontent.com/77143046/136793882-bf3587b0-9d80-4445-8261-438ec74ccd9d.jpg" 
+alt="xvoid-bot" border="0">
+
+# **xvoid-bot : a oriented bot for whatsapp**
+
+# How To Install?
  
  ```js
-npm install
-node .
+> update && apt upgrade
+> apt install git -y
+> apt install nodejs -y
+> apt install ffmpeg -y
+> git clone https://github.com/CyrusCore/xvoid-bot
+> cd xvoid-bot
+> npm install 
+> node . [session-name] 
+
 ```
 
 Edit The Config On Config/Config.json and Config/api.json
+
+##   **Contribution**
+ 
+ - Bot is still developing so If you want to contribute please consider Doing PRs thank you
+ 
 
 # Thanks To
 
