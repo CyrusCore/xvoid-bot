@@ -493,6 +493,19 @@ module.exports = async (client, message) => {
                 await client.sendFileFromUrl(from, vioo.data.vid, 'bokep.mp4', `Title : ${vioo.data.judul}\nSize : ${vioo.data.size}`, id)
             }
                 break;
+            case 'nhder':
+                if (args.length !== 1) return await client.reply(from, 'Input The Doujin Code!', id)
+                await client.reply(from, eng1.wait(), id)
+                try {
+                    const kodeDojin = args[0]
+                    const proccessLink = `https://nhder.herokuapp.com/download/nhentai/${kodeDojin}/zip`
+                    const captionDojin = `------[ NHENTAI DOWNLOADER ]------\n\n➸ Code doujin: ${kodeDojin}`
+                    await client.sendFileFromUrl(from, proccessLink, `${kodeDojin}.zip`, captionDojin, id)
+                } catch (err) {
+                    console.error(err)
+                    await client.reply(from, `Error!\n${err}`, id)
+                    }
+                break;
             //Fun
             case 'girl':
                 const imglink = 'https://h4ck3rs404-api.herokuapp.com/api/randomcewek?apikey=404Api'
