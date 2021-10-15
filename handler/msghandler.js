@@ -528,7 +528,6 @@ module.exports = async (client, message) => {
             }
                 break;
             case 'nhder':
-
                 if (args.length !== 1) return await client.reply(from, 'Input The Doujin Code!', id)
                 await client.reply(from, eng1.wait(), id)
                 try {
