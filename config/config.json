@@ -1,7 +1,7 @@
 {
-    "ownernumber": "yournumber@c.us",
+    "ownernumber": "your number@c.us", //eg: 628XXXXXX
     "prefix": "!",
-    "owner": "yournumber without @c.us",
-    "support": "",
-    "admin": ["admin number multiple use coma"]
+    "owner": "your number", //without @c.us
+    "support": "",// let it blank [In Progress]
+    "admin": ["bot admin number@c.us"]
 }

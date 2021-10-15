@@ -9,7 +9,6 @@ const menu = `
 ⌖ ${prefix}donate
 ⌖ ${prefix}ownerbot/ownerbot
 ⌖ ${prefix}join [Group Link]
-⌖ ${prefix}
 
 *⌊ Other ⌉*
 
@@ -29,8 +28,11 @@ const menu = `
 ⌖ ${prefix}duck
 ⌖ ${prefix}panda
 ⌖ ${prefix}girl
-⌖ ${prefix}silverplaybutton
-⌖ ${prefix}goldplaybutton
+⌖ ${prefix}silverplaybutton [Text]
+⌖ ${prefix}goldplaybutton [Text]
+⌖ ${prefix}neondevil [Text]
+⌖ ${prefix}firewing [Text]
+⌖ ${prefix}angelwing [Text]
 
 *⌊ Media ⌉*
 
@@ -41,10 +43,16 @@ const menu = `
 ⌖ ${prefix}playvn [title]
 ⌖ ${prefix}playv [title]
 
-*⌊ Nsfw ⌉*
+`
+
+const nsfw = `
 
 ⌖ ${prefix}xnxx [Title]
 ⌖ ${prefix}xnxxdl [link] [still in progress]
+⌖ ${prefix}nhder
+⌖ ${prefix}blowjob [Random IMG]
+⌖ ${prefix}neko [Random IMG]
+⌖ ${prefix}maid [Random IMG]
 
 `
 const adminmenu = `
@@ -64,4 +72,13 @@ const donate = `
 ⌖ https://sociabuzz.com/projectred/tribe
 `
 
-module.exports = {menu, adminmenu, donate}
+const sourcecode = `
+This source code / bot is an open-source (free) program written using Javascript, you can use, copy, modify, combine, publish, distribute, sublicense, and or sell copies without removing the main author of this source code / bot.
+By using this source code / bot, you agree to the following Terms and Conditions:
+- Source code / bots do not store your data on our servers.
+- Source code / bot is not responsible for your orders to this bot.
+- Source code / bot you can see at https://github.com/CyrusCore/xvoid-bot
+Instagram: 
+Best regards, CyNetics.`
+
+module.exports = {menu, adminmenu, donate, nsfw, sourcecode}

@@ -45,6 +45,7 @@ const startbot = async() => {
 
         Client.onAddedToGroup(async (chat) => {
             const groups = await Client.getAllGroups()
+            console.log(`Xvoid Has Been Added To Group `)
             if (groups.length > groupLimit) {
                 await Client.sendText(chat.id `Sorry, the group on this Bot is full\nMax Group is: ${groupLimit}`).then(() => {
                     Client.leaveGroup(chat.id)

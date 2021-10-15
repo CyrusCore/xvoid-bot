@@ -3,6 +3,7 @@ const link = 'https://arugaz.herokuapp.com'
 const fileyt = 'https://raw.githubusercontent.com/ArugaZ/scraper-results/main/20201111_230923.jpg'
 const eroryt = 'https://raw.githubusercontent.com/ArugaZ/scraper-results/main/20201111_234624.jpg'
 const apizeks = require('../config/api.json').zeks
+const fetchText = require('../utils/fetcher').fetchText
 
 const dewabatch = async (judul) => new Promise((resolve, reject) => {
 	axios.get(`${link}/api/dewabatch?q=${judul}`)
@@ -364,6 +365,13 @@ const igstalk = async (url) => new Promise((resolve, reject) => {
 	})
 })
 
+const urlShortener = async (url) => new Promise((resolve, reject) => {
+    console.log(color('[LOGS]', 'grey'), 'Creating short url...')
+    fetchText(`https://tinyurl.com/api-create.php?url=${url}`)
+        .then((text) => resolve(text))
+        .catch((err) => reject(err))
+})
+
 module.exports = {
     ytmp3,
     ytmp4,
@@ -383,6 +391,7 @@ module.exports = {
 	bapakfont,
 	lirik,
 	movie,
+	urlShortener,
 	cerpen,
 	cersex,
 	puisi,

@@ -15,7 +15,7 @@ const exec = require('child_process')
 const cariKasar = require('../lib/dirtywords')
 const _txt= require('../commands/menu')
 const ownerNumber = require('../config/config.json').ownernumber
-const { processTime } = require('../utils')
+const { processTime , isUrl, messageLog} = require('../utils/index.js')
 const fs = require('fs-extra')
 const banned = JSON.parse(fs.readFileSync('./database/banned.json'))
 const simi = JSON.parse(fs.readFileSync('./database/simi.json'))
@@ -68,7 +68,7 @@ module.exports = async (client, message) => {
         const args = body.trim().split(/ +/).slice(1)
         const botNumber = (await client.getHostNumber()) + '@c.us';
         const q = args.join(' ')
-        const ar = body.trim().split(/ +/).slice(1)
+        const ar = args.map((v) => v.toLowerCase())
         const isAdmin = groupMetadata ? groupMetadata.participants.find((res) => res.id === sender.id).isAdmin : undefined;
         const isOwner = sender.id === ownerNumber
         const isBotAdmin = groupMetadata ? groupMetadata.participants.find((res) => res.id === botNumber).isAdmin : undefined;
@@ -114,7 +114,8 @@ module.exports = async (client, message) => {
                 await client.sendTextWithMentions(from, `@${sender.id} is detected sending a virtext.\nYou will be kicked!`)
                 await client.removeParticipant(groupId, sender.id)
              }
-         } 
+         }
+        //Ant Link 
         if (isGroupMsg && !isGroupAdmins && isBotGroupAdmins && isDetectorOn && !isOwner) {
             if (chats.match(new RegExp(/(https:\/\/chat.(?!whatsapp.com))/gi))) {
                 console.log(color('[KICK]', 'red'), color('Received a fake group link!', 'yellow'))
@@ -126,6 +127,13 @@ module.exports = async (client, message) => {
         const allChats = await client.getAllChats();
         switch (command) {
             //Info
+            case 'sc':
+            case 'sourcecode':
+                await client.sendText(from, _txt.sourcecode, id)
+                break;
+            case 'nsfw':
+                await client.sendText(from, _txt.nsfw, id)
+                break;
             case 'about':
                 await client.sendText(from, faq.help, id)
                 break;
@@ -144,7 +152,7 @@ module.exports = async (client, message) => {
             case 'help':
             case 'menu':
                 const img5 = 'https://cdn.iconscout.com/icon/free/png-256/node-js-3445765-2878691.png'
-                await client.sendFileFromUrl(from, img5, '', _txt.menu, id)
+                await client.sendText(from, _txt.menu, id)
                 break;
             case 'adminmenu':
                 if (!isGroupMsg) return client.reply(from, 'Sorry, this command can only be used in groups!', id)
@@ -183,6 +191,23 @@ module.exports = async (client, message) => {
                 }
                 break;
             //Admins Group
+            case 'antilink':
+                if (!isGroupMsg) return await client.reply(from, eng1.groupOnly(), id)
+                if (!isGroupAdmins) return await client.reply(from, eng1.adminOnly(), id)
+                if (!isBotGroupAdmins) return await client.reply(from, eng1.botNotAdmin(), id)
+                if (ar[0] === 'enable') {
+                    if (isDetectorOn) return await client.reply(from, eng1.detectorOnAlready(), id)
+                    _antilink.push(groupId)
+                    fs.writeFileSync('./database/group/antilink.json', JSON.stringify(_antilink))
+                    await client.reply(from, eng1.detectorOn(name, formattedTitle), id)
+                } else if (ar[0] === 'disable') {
+                    _antilink.splice(groupId, 1)
+                    fs.writeFileSync('./database/group/antilink.json', JSON.stringify(_antilink))
+                    await client.reply(from, eng1.detectorOff(), id)
+                } else {
+                    await client.reply(from, eng1.wrongFormat(), id)
+                }
+            break
             case 'add':
                 if (!isGroupMsg) return client.reply(from, 'Sorry, this command can only be used in groups!', id)
                 if (!isGroupAdmins) return client.reply(from, 'Fail, this command can only be used by group admins!', id)
@@ -362,7 +387,7 @@ module.exports = async (client, message) => {
                 const getvid = await axios.get(`https://api.zeks.xyz/api/ytplaymp4?q=${q}&apikey=${apizeks}`)
                 if (getvid.data.status == false) return client.reply(from, `Website error`, id)
                 const { title, url_video, size, thumbnail, source } = getvid.data.result
-                if (Number(size.split(' MB')[0]) > 15.00) return client.sendFileFromUrl(from, thumbnail, 'thumb.jpg', `「 PLAY MP4 」\n\n• Judul : ${title}\n• Filesize : ${size}\n\n_Sorry, Video duration exceeds 15 MB. Please download the video via the link below.\n${url_video}`, id)
+                if (Number(size.split(' MB')[0]) > 25.00) return client.sendFileFromUrl(from, thumbnail, 'thumb.jpg', `「 PLAY MP4 」\n\n• Judul : ${title}\n• Filesize : ${size}\n\n_Sorry, Video duration exceeds 25 MB. Please download the video via the link below.\n${url_video}`, id)
                 await client.sendFileFromUrl(from, thumbnail, 'pic.jpg', `「 PLAY 」\n\n➸ Title : ${title}\n➸ Filesize : ${size}\n➸ Link : ${source}\n\n_Video is being sent_`, id)
                 await client.sendFileFromUrl(from, url_video, 'thumb.mp4', '', id)
                 break;
@@ -379,27 +404,36 @@ module.exports = async (client, message) => {
                 await fs.unlinkSync('./media/playvn.mp3')
                 break;
             case 'spotifysearch':
-                case 'searchspotify':
-                    if (args.length == 0) return client.reply(from, `Shows the spotify list you are looking for!\nUse ${prefix}spotifysearch song title\nExample: ${prefix}spotifysearch young`, id)
-                    const carispotify = body.slice(15)
-                    client.reply(from, eng1.wait, id)
-                    const spotifyapi = await axios.get(`https://api.zeks.me/api/spotify?apikey=${apizeks}&q=${carispotify}`)
-                    const spotifydata = spotifyapi.data
-                    const spotres = spotifydata.data
-                    let spotifytext = `*「 S P O T I F Y 」*\n`
-                    for (let i = 0; i < spotres.length; i++) {
-                        spotifytext += `\n─────────────────\n\n*•Title:* ${spotres[i].title}\n*•Artists:* ${spotres[i].artists}\n*•Album:* ${spotres[i].album}\n*•Url:* ${spotres[i].url}\n`
-                    }
-                    await client.sendFileFromUrl(from, spotres[0].thumb, 'img.jpg', spotifytext, id)
-                        .catch(err => {
-                            console.log(err)
-                            client.reply(from, 'An error occurred, please try again', id)
-                        })
-                        .catch(err => {
-                            console.log(err)
-                            client.reply(from, err.message, id)
-                        })
-                    break;
+            case 'searchspotify':
+                if (args.length == 0) return client.reply(from, `Shows the spotify list you are looking for!\nUse ${prefix}spotifysearch song title\nExample: ${prefix}spotifysearch young`, id)
+                const carispotify = body.slice(15)
+                client.reply(from, eng1.wait, id)
+                const spotifyapi = await axios.get(`https://api.zeks.me/api/spotify?apikey=${apizeks}&q=${carispotify}`)
+                const spotifydata = spotifyapi.data
+                const spotres = spotifydata.data
+                let spotifytext = `*「 S P O T I F Y 」*\n`
+                for (let i = 0; i < spotres.length; i++) {
+                    spotifytext += `\n─────────────────\n\n*•Title:* ${spotres[i].title}\n*•Artists:* ${spotres[i].artists}\n*•Album:* ${spotres[i].album}\n*•Url:* ${spotres[i].url}\n`
+                }
+                await client.sendFileFromUrl(from, spotres[0].thumb, 'img.jpg', spotifytext, id)
+                    .catch(err => {
+                        console.log(err)
+                        client.reply(from, 'An error occurred, please try again', id)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        client.reply(from, err.message, id)
+                    })
+                break;
+            case 'shortener':
+            case 'shortlink':
+            case 'linkshort':
+                if (args.length == 0) return reply(`Type ${prefix}shortlink <url>`)
+                if (!isUrl(args[0])) return reply('Sorry, the url you sent is invalid. Make sure to use the http/https format')
+                const shorted = await xvoidApi.urlShortener(args[0])
+                await client.sendText(shorted).catch(e => { return printError(e) })
+                break;
+
             //Admins Bot
             case 'bye':
                 if (!isAdminBot) return client.reply(from, `Sorry This Command Is For Bot Admins`, id)
@@ -493,12 +527,38 @@ module.exports = async (client, message) => {
                 await client.sendFileFromUrl(from, vioo.data.vid, 'bokep.mp4', `Title : ${vioo.data.judul}\nSize : ${vioo.data.size}`, id)
             }
                 break;
+            case 'nhder':
+
+                if (args.length !== 1) return await client.reply(from, 'Input The Doujin Code!', id)
+                await client.reply(from, eng1.wait(), id)
+                try {
+                    const kodeDojin = args[0]
+                    const proccessLink = `https://nhder.herokuapp.com/download/nhentai/${kodeDojin}/zip`
+                    const captionDojin = `------[ NHENTAI DOWNLOADER ]------\n\n➸ Code doujin: ${kodeDojin}`
+                    await client.sendFileFromUrl(from, proccessLink, `${kodeDojin}.zip`, captionDojin, id)
+                } catch (err) {
+                    console.error(err)
+                    await client.reply(from, `Error!\n${err}`, id)
+                    }
+                break;
+            case 'blowjob':
+                const bj = 'https://h4ck3rs404-api.herokuapp.com/api/nsfw/blowjob?apikey=404Api'
+                await client.sendFileFromUrl(from, bj, '', '', id)
+                break;
+            case 'neko':
+                const neko = 'https://h4ck3rs404-api.herokuapp.com/api/nsfw/neko?apikey=404Api'
+                await client.sendFileFromUrl(from, neko, '', '', id)
+                break;
+            case 'maid':
+                const maid = 'https://h4ck3rs404-api.herokuapp.com/api/nsfw/maid?apikey=404Api'
+                await client.sendFileFromUrl(from, maid, '', '', id)
+                break;
             //Fun
             case 'girl':
                 const imglink = 'https://h4ck3rs404-api.herokuapp.com/api/randomcewek?apikey=404Api'
                 await client.sendFileFromUrl(from, imglink, '', '', id)
             case 'wallpaper':
-                if (!q) return client.reply(from, `To Get Wallpaper Type: !wallpaper [tech/muslim/code/cyberspace/mountain]`)
+                if (!q) return client.sendText(from, `To Get Wallpaper Type: !about-wallpaper`, id)
                 if (args[0] == 'tech') {
                     const tech = 'https://server-api-rey.herokuapp.com/api/wallpaper/teknologi?apikey=ditofficial'
                     client.sendFileFromUrl(from, tech, '', '', id)
@@ -574,8 +634,31 @@ module.exports = async (client, message) => {
                 break;
             case 'goldplaybutton':
                 if (!q ) return client.sendText(from, `Please Type: !goldplaybutton [text]`, id)
-                const gold = `https://server-api-rey.herokuapp.com/api/maker/goldbutton?text=reyganz&apikey=ditofficial`
+                const gold = `https://server-api-rey.herokuapp.com/api/maker/goldbutton?text=${q}&apikey=ditofficial`
                 await client.sendFileFromUrl(from, gold, '', '', id)       
+                break;
+            case 'neondevil':
+                if (!q) return client.sendText(from, `Please Type !neondevil [Text]`, id)
+                const neondevil = `https://h4ck3rs404-api.herokuapp.com/api/ephoto/neondevil?text=${q}&apikey=404Api`
+                await client.sendFileFromUrl(from, neondevil, '', '', id)
+                break;
+            case 'firewing':
+                if (!q) return client.sendText(from, `Please Type !firewing [Text]`, id)
+                const firewing = `https://h4ck3rs404-api.herokuapp.com/api/ephoto/firewing?text=${q}&apikey=404Api`
+                await client.sendFileFromUrl(from, firewing, '', '', id)
+                break;
+            case 'angelwing':
+                if (!q) return client.sendText(from, `Please Type !firewing [Text]`, id)
+                const angelwing = `https://h4ck3rs404-api.herokuapp.com/api/ephoto/angelwing?text=${q}&apikey=404Api`
+                await client.sendFileFromUrl(from, angelwing, '', '', id)
+                break;
+            case 'waifu':
+                const waifu = 'https://server-api-rey.herokuapp.com/api/wallpaper/waifu2?apikey=ditofficial'
+                await client.sendFileFromUrl(from, waifu, '', '', id)
+                break;
+            case 'nezuko':
+                const nezuko = 'https://server-api-rey.herokuapp.com/api/wallpaper/nezuko?apikey=ditofficial'
+                await client.sendFileFromUrl(from, nezuko, '', '', id)
                 break;
 
         };

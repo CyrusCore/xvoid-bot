@@ -42,18 +42,18 @@ IG: https://www.instagram.com/iota_id_/
 
 const wallpaper = `
 
-*⌊ About Me ⌉*
+*⌊ Wallpaper Command ⌉*
 
-!Wallpaper tech
-!Wallpaper muslim
-!Wallpaper code
-!Wallpaper cyberspace
-!Wallpaper mountain
-!Wallpaper girl
-!Wallpaper boy
-!Wallpaper hacker
-!Wallpaper satanic
-!Wallpaper gaming
+!wallpaper tech
+!wallpaper muslim
+!wallpaper code
+!wallpaper cyberspace
+!wallpaper mountain
+!wallpaper girl
+!wallpaper boy
+!wallpaper hacker
+!wallpaper satanic
+!wallpaper gaming
 `
 
 const api = `
