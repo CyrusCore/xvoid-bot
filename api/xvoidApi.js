@@ -146,16 +146,6 @@ const quote = async () => new Promise((resolve, reject) => {
     })
 })
 
-const wiki = async (url) => new Promise((resolve, reject) => {
-    axios(`https://api.zeks.me/api/wiki?apikey=ziv0AG4hoWiurIExT9rHpIFIscH&q=${url}`)
-    .then((res) => {
-        resolve(res.data.result)
-    })
-    .catch((err) =>{
-        reject(err)
-    })
-})
-
 const daerah = async () => new Promise((resolve, reject) => {
     axios.get(`${link}/daerah`)
     .then((res) => {
@@ -372,7 +362,45 @@ const urlShortener = async (url) => new Promise((resolve, reject) => {
         .catch((err) => reject(err))
 })
 
+/**
+ * Search for Alkitab.
+ * @param {string} query 
+ * @returns {Promise<object>}
+ */
+ const alkitab = (query) => new Promise((resolve, reject) => {
+    console.log('Searching for Alkitab info...')
+    fetchJson(`https://docs-jojo.herokuapp.com/api/alkitabsearch?q=${query}`)
+        .then((result) => resolve(result))
+        .catch((err) => reject(err))
+})
+
+/**
+ * Get Wikipedia result for Indonesian language from given query.
+ * @param {string} query
+ * @returns {Promise<object>}
+ */
+ const wiki = (query) => new Promise((resolve, reject) => {
+    console.log(`Get result for ${query} in Wikipedia...`)
+    fetchJson(`https://docs-jojo.herokuapp.com/api/wiki?q=${query}`)
+        .then((result) => resolve(result))
+        .catch((err) => reject(err))
+})
+
+/**
+ * Get Wikipedia result for English language from given query.
+ * @param {string} query
+ * @returns {Promise<object>}
+ */
+const wikien = (query) => new Promise((resolve, reject) => {
+    console.log(`Get result for ${query} in Wikipedia...`)
+    fetchJson(`https://videfikri.com/api/wikieng?query=${query}`)
+        .then((result) => resolve(result))
+        .catch((err) => reject(err))
+})
+
 module.exports = {
+	wikien,
+	alkitab,
     ytmp3,
     ytmp4,
 	fb,

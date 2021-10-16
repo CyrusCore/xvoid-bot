@@ -53,7 +53,6 @@ const nsfw = `
 ⌖ ${prefix}blowjob [Random IMG]
 ⌖ ${prefix}neko [Random IMG]
 ⌖ ${prefix}maid [Random IMG]
-⌖ ${prefix}nhder [Doujin Code]
 
 `
 const adminmenu = `
@@ -72,6 +71,7 @@ const donate = `
 ⌖ https://trakteer.id/projectred
 ⌖ https://sociabuzz.com/projectred/tribe
 `
+
 const sourcecode = `
 This source code / bot is an open-source (free) program written using Javascript, you can use, copy, modify, combine, publish, distribute, sublicense, and or sell copies without removing the main author of this source code / bot.
 By using this source code / bot, you agree to the following Terms and Conditions:

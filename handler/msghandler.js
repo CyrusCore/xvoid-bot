@@ -16,6 +16,7 @@ const cariKasar = require('../lib/dirtywords')
 const _txt= require('../commands/menu')
 const ownerNumber = require('../config/config.json').ownernumber
 const { processTime , isUrl, messageLog} = require('../utils/index.js')
+const { createSerial } = require('../tools/index.js')
 const fs = require('fs-extra')
 const banned = JSON.parse(fs.readFileSync('./database/banned.json'))
 const simi = JSON.parse(fs.readFileSync('./database/simi.json'))
@@ -33,6 +34,8 @@ const canvas = require('canvacord')
 const requests = require("node-fetch")
 const bent = require('bent')
 const { daily, level, register, afk, reminder, premium, limit} = require('../function/index')
+const google = require('google-it')
+const translate = require('@vitalets/google-translate-api')
 //JSON DATABASE
 const _nsfw = JSON.parse(fs.readFileSync('./database/group/nsfw.json'))
 const _antilink = JSON.parse(fs.readFileSync('./database/group/antilink.json'))
@@ -83,6 +86,7 @@ module.exports = async (client, message) => {
         const isSimi = simi.includes(chatId)
         const isNgegas = ngegas.includes(chatId)
         const isKasar = await cariKasar(chats)
+        const isRegistered = register.checkRegisteredUser(sender.id, _registered)
         const ind = require('../message/index').ind
         const eng = require('../message/index').eng
         const eng1 = require('../message/index').eng1
@@ -123,7 +127,6 @@ module.exports = async (client, message) => {
                 await client.removeParticipant(groupId, sender.id)
             }
         }
-
         const allChats = await client.getAllChats();
         switch (command) {
             //Info
@@ -189,6 +192,17 @@ module.exports = async (client, message) => {
                               client.reply(from, 'Fail!', id)
                           })
                 }
+                break;
+            case 'register':
+                if (isRegistered) return await client.reply(from, eng1.registeredAlready(), id)
+                if (isGroupMsg) return await client.reply(from, eng1.pcOnly(), id)
+                if (!q.includes('|')) return await client.reply(from, eng1.wrongFormat(), id)
+                const namaUser = q.substring(0, q.indexOf('|') - 1)
+                const umurUser = q.substring(q.lastIndexOf('|') + 2)
+                const serialUser = createSerial(20)
+                if (Number(umurUser) >= 40) return await client.reply(from, eng1.ageOld(), id)
+                register.addRegisteredUser(sender.id, namaUser, umurUser, serialUser, _registered)
+                await client.reply(from, eng1.registered(namaUser, umurUser, sender.id, serialUser), id)
                 break;
             //Admins Group
             case 'antilink':
@@ -433,7 +447,6 @@ module.exports = async (client, message) => {
                 const shorted = await xvoidApi.urlShortener(args[0])
                 await client.sendText(shorted).catch(e => { return printError(e) })
                 break;
-
             //Admins Bot
             case 'bye':
                 if (!isAdminBot) return client.reply(from, `Sorry This Command Is For Bot Admins`, id)
@@ -528,6 +541,7 @@ module.exports = async (client, message) => {
             }
                 break;
             case 'nhder':
+
                 if (args.length !== 1) return await client.reply(from, 'Input The Doujin Code!', id)
                 await client.reply(from, eng1.wait(), id)
                 try {
@@ -659,6 +673,31 @@ module.exports = async (client, message) => {
                 const nezuko = 'https://server-api-rey.herokuapp.com/api/wallpaper/nezuko?apikey=ditofficial'
                 await client.sendFileFromUrl(from, nezuko, '', '', id)
                 break;
+            case 'hbd':
+            case 'happybirthday':
+                const hbd = 'https://i.ibb.co/FH8pVZN/happy-birthday.jpg'
+                if (!q) return client.reply(from, `Type !hbd [name]`)
+                const hbdname = args[0]
+                await client.sendFileFromUrl(from, hbd, '', `Happy BirthDay ${hbdname}`, id)
+            //Edu
+            case 'google':
+            case 'googlesearch':
+                if (!q) return await client.reply(from, eng1.wrongFormat(), id)
+                await client.reply(from, eng1.wait(), id)
+                google({ 'query': q, 'no-display': true })
+                    .then(async (results) => {
+                        let txt = `-----[ *GOOGLE SEARCH* ]-----\n\n*by: rashidsiregar28*\n\n_*Search results for: ${q}*_`
+                        for (let i = 0; i < results.length; i++) {
+                            txt += `\n\n➸ *Title*: ${results[i].title}\n➸ *Desc*: ${results[i].snippet}\n➸ *Link*: ${results[i].link}\n\n=_=_=_=_=_=_=_=_=_=_=_=_=`
+                        }
+                        await client.reply(from, txt, id)
+                    })
+                    .catch(async (err) => {
+                        console.error(err)
+                        await client.reply(from, 'Error!', id)
+                    })
+            break
+
 
         };
     } catch (err) {

@@ -1,4 +1,4 @@
-const fs = require('fs-extra')
+const fs = require('fs')
 
 /**
  * Add user to database.
@@ -9,8 +9,8 @@ const fs = require('fs-extra')
  * @param {string} serial 
  * @param {object} _dir 
  */
-const addRegisteredUser = (userId, name, age, time, serial, _dir) => {
-    const obj = { id: userId, name: name, age: age, time: time, serial: serial }
+const addRegisteredUser = (userId, name, age, serial, _dir) => {
+    const obj = { id: userId, name: name, age: age, serial: serial }
     _dir.push(obj)
     fs.writeFileSync('./database/bot/registered.json', JSON.stringify(_dir))
 }

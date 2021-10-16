@@ -10,7 +10,7 @@ exports.ok = () => {
 }
 
 exports.wrongFormat = () => {
-    return `Incorrect format! Please check the usage in *${prefix}menu*.`
+    return `Incorrect format! Please check the usage in !menu.`
 }
 
 exports.emptyMess = () => {
@@ -111,7 +111,7 @@ exports.notRegistered = () => {
     return `You haven't registered in our database!\n\nPlease register by typing:\n*${prefix}register* name | age`
 }
 
-exports.registered = (name, age, userId, time, serial) => {
+exports.registered = (name, age, userId, serial) => {
     return `
 *── 「 REGISTRATION 」 ──*
     
@@ -119,13 +119,11 @@ Your account has been created with data below:
 ➸ *Name*: ${name}
 ➸ *Age*: ${age}
 ➸ *ID*: ${userId}
-➸ *Registered time*: ${time}
 ➸ *Serial*: ${serial}
     
 Note:
 Don't share your *serial* to anyone!
     
-Type *${prefix}rules* first ok~
     `
 }
 
