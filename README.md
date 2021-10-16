@@ -38,3 +38,4 @@ Edit The Config On Config/Config.json and Config/api.json
 * [`MyHuman-Api`](https://myhuman.cf)
 * [`Bdrxzzzz-Api`](https://api.bdrxzzzz.xyz)
 * [`Zeks-Api`](https://zeks.xyz)
+* [`Oreki-san`](https://github.com/Oreki-san)
