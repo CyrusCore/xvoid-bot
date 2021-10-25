@@ -3,8 +3,12 @@ const prefix = require('../config/config.json').prefix;
 const menu = `
 *Xvoid*
 
+*You Must Register First Type: !register [name] | [age]*
+*Ex: !register cynetic | 18*
+
 *⌊ Menu ⌉*
 
+⌖ ${prefix}register [name | age]
 ⌖ ${prefix}menu/help
 ⌖ ${prefix}donate
 ⌖ ${prefix}ownerbot/ownerbot
@@ -12,7 +16,15 @@ const menu = `
 
 *⌊ Other ⌉*
 
+⌖ ${prefix}sourcecode
 ⌖ ${prefix}about
+* ${prefix}listblock [list of people blocked by bots]
+* ${prefix}serial [info about your registration]
+
+*⌊ Edu ⌉*
+
+⌖ ${prefix}google [query]
+⌖ ${prefix}corona [country]
 
 
 *⌊ Fun ⌉*
@@ -33,6 +45,11 @@ const menu = `
 ⌖ ${prefix}neondevil [Text]
 ⌖ ${prefix}firewing [Text]
 ⌖ ${prefix}angelwing [Text]
+⌖ ${prefix}waifu
+⌖ ${prefix}nezuko
+⌖ ${prefix}friend [random contact from register command]
+⌖ ${prefix}hbd [name]
+⌖ ${prefix}motivation
 
 *⌊ Media ⌉*
 
@@ -42,6 +59,8 @@ const menu = `
 ⌖ ${prefix}tiktokmusic [sound_link]
 ⌖ ${prefix}playvn [title]
 ⌖ ${prefix}playv [title]
+⌖ ${prefix}igstalk [ERROR]
+⌖ ${prefix}shorlink [ERROR]
 
 `
 
@@ -53,6 +72,7 @@ const nsfw = `
 ⌖ ${prefix}blowjob [Random IMG]
 ⌖ ${prefix}neko [Random IMG]
 ⌖ ${prefix}maid [Random IMG]
+* ${prefix}xnxxapp
 
 `
 const adminmenu = `
@@ -65,6 +85,7 @@ const adminmenu = `
 ⌖ *${prefix}setprofile*
 ⌖ *${prefix}del*
 ⌖ *${prefix}welcome*
+⌖ *${prefix}antilink [enable/disable]*
 `
 const donate = `
 ⌖ https://saweria.co/AbramSatria

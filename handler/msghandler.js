@@ -24,7 +24,7 @@ const ngegas = JSON.parse(fs.readFileSync('./database/ngegas.json'))
 const setting = JSON.parse(fs.readFileSync('./database/setting.json'))
 const welcome = JSON.parse(fs.readFileSync('./database/welcome.json'))
 const color = require('../utils/color')
-const xvoidApi = require('../api/xvoidApi')
+const xvoidAPI = require('../api/xvoidAPI')
 const _function = require('../lib/index')
 const prefix = require('../config/config.json').prefix
 const lolhuman = require('../config/api.json').lolhuman
@@ -91,6 +91,7 @@ module.exports = async (client, message) => {
         const eng = require('../message/index').eng
         const eng1 = require('../message/index').eng1
         const ind1 = require('../message/index').ind1
+        const isPremium = premium.checkPremiumUser(sender.id, _premium)
         const isLevelingOn = isGroupMsg ? _leveling.includes(groupId) : false
 
         const validMessage = caption ? caption : body;
@@ -130,6 +131,27 @@ module.exports = async (client, message) => {
         const allChats = await client.getAllChats();
         switch (command) {
             //Info
+            case 'listblock':
+                let block = eng1.listBlock(blockNumber)
+                for (let i of blockNumber) {
+                    block += `@${i.replace('@c.us', '')}\n`
+                }
+                await client.sendTextWithMentions(from, block)
+                break;
+            case 'serial':
+                if (!isRegistered) return await client.reply(from, eng1.registered(), id)
+                if (isGroupMsg) return await client.reply(from, eng1.pcOnly(), id)
+                if (args.length !== 1) return await client.reply(from, eng1.wrongFormat(), id)
+                const serials = args[0]
+                if (register.checkRegisteredUserFromSerial(serials, _registered)) {
+                    const name = register.getRegisteredNameFromSerial(serials, _registered)
+                    const age = register.getRegisteredAgeFromSerial(serials, _registered)
+                    const id = register.getRegisteredIdFromSerial(serials, _registered)
+                    await client.sendText(from, eng1.registeredFound(name, age, serials, id))
+                } else {
+                     await client.sendText(from, eng1.registeredNotFound(serials))
+                }
+                break;
             case 'sc':
             case 'sourcecode':
                 await client.sendText(from, _txt.sourcecode, id)
@@ -281,7 +303,7 @@ module.exports = async (client, message) => {
                     hehex += '╠➥'
                     hehex += ` @${groupMem[i].id.replace(/@c.us/g, '')}\n`
                 }
-                hehex += '╚═〘 *X V O I D  B O T* 〙'
+                hehex += '╚═〘 *X V O I D  C O N* 〙'
                 await client.sendTextWithMentions(from, hehex)
                 break;
             case 'welcome':
@@ -333,29 +355,12 @@ module.exports = async (client, message) => {
                 } else {
                     client.reply(from, `To change the group chat settings so that only admins can chat\n\nUsage:\n${prefix}mutegroup on\n${prefix}mutegroup off`, id)
                 }
-                break;
-            case 'antilink':
-                if (!isGroupMsg) return await client.reply(from, eng1.groupOnly(), id)
-                if (!isGroupAdmins) return await client.reply(from, eng1.adminOnly(), id)
-                if (!isBotGroupAdmins) return await client.reply(from, eng1.botNotAdmin(), id)
-                if (ar[0] === 'enable') {
-                    if (isDetectorOn) return await client.reply(from, eng1.detectorOnAlready(), id)
-                    _antilink.push(groupId)
-                    fs.writeFileSync('./database/group/antilink.json', JSON.stringify(_antilink))
-                    await client.reply(from, eng1.detectorOn(name, formattedTitle), id)
-                } else if (ar[0] === 'disable') {
-                    _antilink.splice(groupId, 1)
-                    fs.writeFileSync('./database/group/antilink.json', JSON.stringify(_antilink))
-                    await client.reply(from, eng1.detectorOff(), id)
-                } else {
-                    await client.reply(from, eng1.wrongFormat(), id)
-                }
-            break          
+                break;        
             //Media
             case 'ytmp3':
                 if (args.length == 0) return client.reply(from, `To download songs from youtube\ntype: ${prefix}ytmp3 [link_yt]`, id)
                 const linkmp3 = args[0].replace('https://youtu.be/','').replace('https://www.youtube.com/watch?v=','')
-                xvoidApi.ytmp3(`https://www.youtube.com/watch?v=${linkmp3}`)
+                xvoidAPI.ytmp3(`https://www.youtube.com/watch?v=${linkmp3}`)
                 .then(async(res) => {
                     if (res.error) return client.sendFileFromUrl(from, `${res.url}`, '', `${res.error}`)
                     await client.sendFileFromUrl(from, `${res.result.thumb}`, '', `Song found\n\nTitle: ${res.result.title}\nSize: ${res.result.size}\nWait sending...`, id)
@@ -368,7 +373,7 @@ module.exports = async (client, message) => {
             case 'ytmp4':
                 if (args.length == 0) return client.reply(from, `To download songs from youtube\ntype: ${prefix}ytmp4 [link_yt]`, id)
                 const linkmp4 = args[0].replace('https://youtu.be/','').replace('https://www.youtube.com/watch?v=','')
-                xvoidApi.ytmp4(`https://www.youtube.com/watch?v=${linkmp4}`)
+                xvoidAPI.ytmp4(`https://www.youtube.com/watch?v=${linkmp4}`)
                 .then(async(res) => {
                     if (res.error) return client.sendFileFromUrl(from, `${res.url}`, '', `${res.error}`)
                     await client.sendFileFromUrl(from, `${res.result.thumb}`, '', `Song found\n\nTitle: ${res.result.title}\nSize: ${res.result.size}\nWait sending...`, id)
@@ -382,7 +387,7 @@ module.exports = async (client, message) => {
                 if (args.length == 0) return client.reply(from, `To download video from tiktok Type: !tiktok myhuman/zeks [Vid_Link]`)
                 await client.reply(from, eng.wait, id);
                 const linkwm = args[0].replace(' https://vt.tiktok.com/','')
-                xvoidApi.tiktokwm(`https://vt.tiktok.com/${linkwm}`)
+                xvoidAPI.tiktokwm(`https://vt.tiktok.com/${linkwm}`)
                 .then(async(res) => {
                     if (res.error) return client.sendFileFromUrl(from, `${res.noWaterMarkUrl}`, '', id)
                     await client.sendFileFromUrl(from, `${res.noWaterMarkUrl}`, '', `_*TikTok Downloader*_\n\nName: ${res.authorMeta.name}\nNick: ${res.authorMeta.nickName}\nFans: ${res.authorMeta.fans}\nRatio: ${res.videoMeta.ratio}\nComment: ${res.commentCount}`, id)
@@ -442,10 +447,28 @@ module.exports = async (client, message) => {
             case 'shortener':
             case 'shortlink':
             case 'linkshort':
-                if (args.length == 0) return reply(`Type ${prefix}shortlink <url>`)
-                if (!isUrl(args[0])) return reply('Sorry, the url you sent is invalid. Make sure to use the http/https format')
-                const shorted = await xvoidApi.urlShortener(args[0])
+                if (args.length == 0) return client.reply(from, `Type ${prefix}shortlink <url>`, id)
+                if (!isUrl(args[0])) return client.reply(from, 'Sorry, the url you sent is invalid. Make sure to use the http/https format', id)
+                const shorted = await xvoidAPI.urlShortener(args[0])
                 await client.sendText(shorted).catch(e => { return printError(e) })
+                break;
+            case 'igstalk':
+                if (!q) return await client.reply(from, `Type: !igstalk [username]`, id)
+                await client.reply(from, ind.wait(), id)
+                xvoidAPI.igStalk(q)
+                    .then(async ({ graphql }) => {
+                        if (graphql === undefined) {
+                            await client.reply(from, 'Not found.', id)
+                        } else {
+                            const { biography, edge_followed_by, edge_follow, full_name, is_private, is_verified, profile_pic_url_hd, username, edge_owner_to_timeline_media } = graphql.user
+                            const text = `*「 IG STALK 」*\n\n➸ *Username*: ${username}\n➸ *Bio*: ${biography}\n➸ *Full name*: ${full_name}\n➸ *Followers*: ${edge_followed_by.count}\n➸ *Followings*: ${edge_follow.count}\n➸ *Private*: ${is_private ? 'Yes' : 'No'}\n➸ *Verified*: ${is_verified ? 'Yes' : 'No'}\n➸ *Total posts*: ${edge_owner_to_timeline_media.count}`
+                            await client.sendFileFromUrl(from, profile_pic_url_hd, 'insta.jpg', text, id)
+                        }
+                    })
+                    .catch(async (err) => {
+                        console.error(err)
+                        await client.reply(from, 'Error!', id)
+                    })
                 break;
             //Admins Bot
             case 'bye':
@@ -511,6 +534,7 @@ module.exports = async (client, message) => {
                 break;
             //Nsfw
             case 'xnxx': {
+                if (!isRegistered) return await client.reply(from, eng1.notRegistered(), id)
                 if (!q) return await client.sendText(from, `Type !xnxx Title`)
                 const xtext = message.body.replace('!xnxx', '')
                 pemisah = xtext.split("|")
@@ -535,13 +559,21 @@ module.exports = async (client, message) => {
             }
                 break;
             case 'xnxxdl': {
+                if (!isRegistered) return await client.reply(from, eng1.notRegistered(), id)
                 const vioo = await axios.get(`https://h4ck3rs404-api.herokuapp.com/api/xnxx?url=${q}&apikey=404Api`)
                 await client.reply(from, `Please wait, the video sent will take longer if the size is large\nSize Videos : ${vioo.data.size}`, id)
                 await client.sendFileFromUrl(from, vioo.data.vid, 'bokep.mp4', `Title : ${vioo.data.judul}\nSize : ${vioo.data.size}`, id)
             }
                 break;
+            case 'xnxxapp': {
+                if (!isRegistered) return await client.reply(from, eng1.notRegistered(), id)
+                const xnxxapp = 'https://b9j8y6c4.map2.ssl.hwcdn.net/videos/android-app/xnxx-STABLE-0.63.apk'
+                await client.sendText(from, `Wait Bot Is Trying To Download The App`, id)
+                await client.sendFileFromUrl(from, xnxxapp, 'xnxx.apk', '', id)
+            }
+                break;
             case 'nhder':
-
+                if (!isRegistered) return await client.reply(from, eng1.notRegistered(), id)
                 if (args.length !== 1) return await client.reply(from, 'Input The Doujin Code!', id)
                 await client.reply(from, eng1.wait(), id)
                 try {
@@ -555,14 +587,17 @@ module.exports = async (client, message) => {
                     }
                 break;
             case 'blowjob':
+                if (!isRegistered) return await client.reply(from, eng1.notRegistered(), id)
                 const bj = 'https://h4ck3rs404-api.herokuapp.com/api/nsfw/blowjob?apikey=404Api'
                 await client.sendFileFromUrl(from, bj, '', '', id)
                 break;
             case 'neko':
+                if (!isRegistered) return await client.reply(from, eng1.notRegistered(), id)
                 const neko = 'https://h4ck3rs404-api.herokuapp.com/api/nsfw/neko?apikey=404Api'
                 await client.sendFileFromUrl(from, neko, '', '', id)
                 break;
             case 'maid':
+                if (!isRegistered) return await client.reply(from, eng1.notRegistered(), id)
                 const maid = 'https://h4ck3rs404-api.herokuapp.com/api/nsfw/maid?apikey=404Api'
                 await client.sendFileFromUrl(from, maid, '', '', id)
                 break;
@@ -570,6 +605,7 @@ module.exports = async (client, message) => {
             case 'girl':
                 const imglink = 'https://h4ck3rs404-api.herokuapp.com/api/randomcewek?apikey=404Api'
                 await client.sendFileFromUrl(from, imglink, '', '', id)
+                break;
             case 'wallpaper':
                 if (!q) return client.sendText(from, `To Get Wallpaper Type: !about-wallpaper`, id)
                 if (args[0] == 'tech') {
@@ -679,6 +715,33 @@ module.exports = async (client, message) => {
                 if (!q) return client.reply(from, `Type !hbd [name]`)
                 const hbdname = args[0]
                 await client.sendFileFromUrl(from, hbd, '', `Happy BirthDay ${hbdname}`, id)
+                break;
+            case 'motivation':
+                xvoidAPI.motivation()
+                    .then(async (body) => {
+                        const motivasiSplit = body.split('\n')
+                        const randomMotivasi = motivasiSplit[Math.floor(Math.random() * motivasiSplit.length)]
+                        await client.sendText(from, randomMotivasi)
+                    })
+                    .catch(async (err) => {
+                        console.error(err)
+                        await client.reply(from, 'Error!', id)
+                    })
+                break;
+            case 'friend':
+                if (!isRegistered) return await client.reply(from, eng1.notRegistered(), id)
+                if (isGroupMsg) return await client.reply(from, eng1.pcOnly(), id)
+                await client.reply(from, 'Looking for a partner...', id)
+                await client.sendContact(from, register.getRegisteredRandomId(_registered))
+                await client.sendText(from, `Partner found: 🙉\n*!next* — find a new partner`)
+                break
+            case 'next':
+                if (!isRegistered) return await client.reply(from, ind.notRegistered(), id)
+                if (isGroupMsg) return await client.reply(from, eng1.pcOnly(), id)
+                await client.reply(from, 'Looking for a partner...', id)
+                await client.sendContact(from, register.getRegisteredRandomId(_registered))
+                await client.sendText(from, `Partner found: 🙉\n*!next* — find a new partner`)
+                break;
             //Edu
             case 'google':
             case 'googlesearch':
@@ -686,7 +749,7 @@ module.exports = async (client, message) => {
                 await client.reply(from, eng1.wait(), id)
                 google({ 'query': q, 'no-display': true })
                     .then(async (results) => {
-                        let txt = `-----[ *GOOGLE SEARCH* ]-----\n\n*by: rashidsiregar28*\n\n_*Search results for: ${q}*_`
+                        let txt = `-----[ *GOOGLE SEARCH* ]-----\n\n*by: @iota_id_*\n\n_*Search results for: ${q}*_`
                         for (let i = 0; i < results.length; i++) {
                             txt += `\n\n➸ *Title*: ${results[i].title}\n➸ *Desc*: ${results[i].snippet}\n➸ *Link*: ${results[i].link}\n\n=_=_=_=_=_=_=_=_=_=_=_=_=`
                         }
@@ -696,8 +759,21 @@ module.exports = async (client, message) => {
                         console.error(err)
                         await client.reply(from, 'Error!', id)
                     })
-            break
-
+            break;
+            case 'corona': 
+            case 'coronavirus':
+                if (!q) return await client.reply(from, eng1.wrongFormat(), id)
+                await client.reply(from, eng1.wait(), id)
+                xvoidAPI.corona(q)
+                    .then(async (res) => {
+                        await client.sendText(from, '🌎️ Covid Info - ' + q.charAt(0).toUpperCase() + q.slice(1) + ' 🌍️\n\n✨️ Total Cases: ' + `${res.cases}` + '\n📆️ Today\'s Cases: ' + `${res.todayCases}` + '\n☣️ Total Deaths: ' + `${res.deaths}` + '\n☢️ Today\'s Deaths: ' + `${res.todayDeaths}` + '\n⛩️ Active Cases: ' + `${res.active}` + '.')
+                    })
+                    .catch(async (err) => {
+                        console.error(err)
+                        await client.reply(from, 'Error!', id)
+                    })
+            break;
+            
 
         };
     } catch (err) {

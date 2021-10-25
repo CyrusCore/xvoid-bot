@@ -3,7 +3,8 @@ const link = 'https://arugaz.herokuapp.com'
 const fileyt = 'https://raw.githubusercontent.com/ArugaZ/scraper-results/main/20201111_230923.jpg'
 const eroryt = 'https://raw.githubusercontent.com/ArugaZ/scraper-results/main/20201111_234624.jpg'
 const apizeks = require('../config/api.json').zeks
-const fetchText = require('../utils/fetcher').fetchText
+const fetchText = require('../tools/fetcher').fetchText
+const fetchJson = require('../utils/fetcher').fetchJson
 
 const dewabatch = async (judul) => new Promise((resolve, reject) => {
 	axios.get(`${link}/api/dewabatch?q=${judul}`)
@@ -345,18 +346,12 @@ const tiktokwm = async (url) => new Promise((resolve, reject) => {
 	})
 })
 
-const igstalk = async (url) => new Promise((resolve, reject) => {
-	axios.get(`${url}`)
-	.then((res) => {
-		resolve(res.data.result)
-	})
-	.catch((res) => {
-		reject(err)
-	})
-})
-
+/**
+ * Create shortlink.
+ * @param {string} url
+ * @returns {Promise<string>}
+ */
 const urlShortener = async (url) => new Promise((resolve, reject) => {
-    console.log(color('[LOGS]', 'grey'), 'Creating short url...')
     fetchText(`https://tinyurl.com/api-create.php?url=${url}`)
         .then((text) => resolve(text))
         .catch((err) => reject(err))
@@ -398,7 +393,55 @@ const wikien = (query) => new Promise((resolve, reject) => {
         .catch((err) => reject(err))
 })
 
+/**
+ * Get Instagram account info from username.
+ * @param {string} username
+ * @returns {Promise<object>}
+ */
+const igStalk = (username) => new Promise((resolve, reject) => {
+    console.log(`Searching account for ${username}`)
+    fetchJson(`https://docs-jojo.herokuapp.com/api/stalk?username=${username}`)
+        .then((result) => resolve(result))
+        .catch((err) => reject(err))
+})
+
+/**
+ * Get motivation text.
+ * @returns {string}
+ */
+const motivation = () => new Promise((resolve, reject) => {
+    fetchText('https://gist.githubusercontent.com/robatron/a66acc0eed3835119817/raw/0e216f8b6036b82de5fdd93526e1d496d8e1b412/quotes.txt')
+        .then((result) => resolve(result))
+        .catch((err) => reject(err))
+})
+
+/**
+ * Get Twitter trending.
+ * @returns {Promise<object>}
+ */
+const trendingTwt = () => new Promise((resolve, reject) => {
+    console.log('Get Twitter trending...')
+    fetchJson('https://docs-jojo.herokuapp.com/api/trendingtwitter')
+        .then((result) => resolve(result))
+        .catch((err) => reject(err))
+})
+
+/**
+ * Search for Result Casses Corona.
+ * @param {string} query 
+ * @returns {Promise<object>}
+ */
+ const corona = (country) => new Promise((resolve, reject) => {
+    console.log(`Search for country ${country}`)
+    fetchJson(`https://coronavirus-19-api.herokuapp.com/countries/${country}/`)
+        .then((result) => resolve(result))
+        .catch((err) => reject(err))
+})
+
 module.exports = {
+	corona,
+	trendingTwt,
+	motivation,
 	wikien,
 	alkitab,
     ytmp3,
@@ -435,5 +478,5 @@ module.exports = {
 	tiktok,
 	joox,
 	tiktokwm,
-	igstalk
+	igStalk
 }

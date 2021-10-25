@@ -1,0 +1,22 @@
+body{
+	background: #2f3136;
+	color: #ffffff;
+	font-family: Helvetica;
+}
+
+a{
+	color: grey;
+	text-decoration:none;
+}
+
+/*white-node*/
+
+.white-mode {
+  background-color: white;
+  color: #2f3136;
+}
+
+.white-mode a{
+	color: #B5DF41;
+	text-decoration:none;
+}

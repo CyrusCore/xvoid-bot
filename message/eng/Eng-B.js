@@ -389,7 +389,7 @@ exports.shopee = (nama, harga, terjual, shop_location, description, link_product
     `
 }
 
-exports.registeredFound = (name, age, time, serial, userId) => {
+exports.registeredFound = (name, age, serial, userId) => {
     return `
 *── 「 REGISTERED 」 ──* 
 
@@ -397,7 +397,6 @@ Account has been found!
 ➸ *Name*: ${name}
 ➸ *Age*: ${age}
 ➸ *ID*: ${userId}
-➸ *Registered time*: ${time}
 ➸ *Serial*: ${serial}
     `
 }

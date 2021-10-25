@@ -1,0 +1,132 @@
+@import url(https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap);
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: Ubuntu, sans-serif
+}
+
+html {
+    background: #2f3136;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    position: relative;
+    min-height: 100%;
+    font-family: Nunito;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #2f3136;
+}
+
+div.text {
+    position: absolute
+}
+
+div.text .status {
+    position: relative;
+    animation: animetop .8s
+}
+
+div.text .readdocs {
+    position: relative;
+    animation: animebot .8s;
+    text-align: center
+}
+
+@keyframes animetop {
+    0% {
+        top: -200px;
+        opacity: 0
+    }
+    100% {
+        top: 0;
+        opacity: 1
+    }
+}
+
+@keyframes animebot {
+    0% {
+        top: 200px;
+        opacity: 0
+    }
+    100% {
+        top: 0;
+        opacity: 1
+    }
+}
+
+p {
+    color: rgba(255, 255, 255, .8);
+    letter-spacing: .15em;
+    font-size: 15px!important;
+    font-weight: 600
+}
+
+a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, .5)
+}
+
+a.sosmed {
+    color: rgba(255, 255, 255, .8)
+}
+
+a:hover {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 1)
+}
+
+.typed-text {
+	color: #0f0;
+}
+
+.cursor {
+    overflow: hidden;
+    border-right: .15em solid orange;
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: .15em;
+    animation: typing 1.5s steps(40, end), blink-caret .75s step-end infinite
+}
+
+@keyframes typing {
+    from {
+        width: 0
+    }
+    to {
+        width: 100%
+    }
+}
+
+@keyframes blink-caret {
+    from,
+    to {
+        border-color: transparent
+    }
+    50% {
+        border-color: orange
+    }
+}
+
+hr {
+    margin: 10px auto;
+    position: relative;
+    background: rgba(255, 255, 255, .5);
+    width: 80%;
+    height: 2px
+}
+
+div.bottom {
+    position: fixed;
+    left: 50%;
+    bottom: 50px;
+    transform: translate(-50%, -50%);
+    margin: 0 auto
+}
