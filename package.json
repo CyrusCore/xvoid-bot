@@ -34,7 +34,7 @@
     "form-data": "^4.0.0",
     "google-it": "^1.6.2",
     "lowdb": "^1.0.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.33",
     "nedb": "^1.8.0",
     "needle": "^3.0.0",
