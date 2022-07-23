@@ -30,7 +30,7 @@
     "dotenv": "^10.0.0",
     "fbvideos": "^1.0.2",
     "figlet": "^1.5.2",
-    "file-type": "^16.5.3",
+    "file-type": "^16.5.4",
     "form-data": "^4.0.0",
     "google-it": "^1.6.2",
     "lowdb": "^1.0.0",
